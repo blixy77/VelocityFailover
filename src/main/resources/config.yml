@@ -1,0 +1,35 @@
+# Name of the limbo server registered in velocity.toml
+limbo-server: "limbo"
+
+# Server groups to monitor.
+# Groups are for ORGANIZATION ONLY - there is no failover within a group.
+# Each server is monitored and blocked individually.
+groups:
+  lobby:
+    servers:
+      - "lobby1"
+      - "lobby2"
+  spawn:
+    servers:
+      - "spawn1"
+      - "spawn2"
+
+# Recovery monitor settings (pings ONLY OFFLINE servers)
+recovery:
+  # Interval between pings for offline servers (ms)
+  ping-interval-ms: 2000
+  # Number of successful pings in a row = server considered ready for recovery
+  pings-to-ready: 3
+  # Additional wait time AFTER pings-to-ready before starting to transfer players (ms)
+  # Gives the server time to fully load all plugins
+  grace-period-ms: 5000
+  # Player transfer interval after grace period (ms) - 1 player per tick
+  transfer-interval-ms: 50
+  # Single ping timeout (ms)
+  ping-timeout-ms: 2000
+
+# Messages sent to players (MiniMessage format)
+messages:
+  sent-to-limbo: "<red>The server is temporarily unavailable. You will be moved back automatically when it returns."
+  reconnecting: "<green>The server is back online! Reconnecting..."
+  connection-blocked: "<red>This server is currently unavailable. Please try again in a moment."
