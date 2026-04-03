@@ -36,7 +36,10 @@ All of this happens seamlessly — players see a short message, wait on limbo, a
 2. Place it in your Velocity `plugins/` folder
 3. Start the proxy — a default `config.yml` will be generated in `plugins/velocityfailover/`
 4. Edit `config.yml` to match your server setup
-5. Restart the proxy
+5. Restart the proxy or use /failoverreload
+
+## Commands and permissions
+/failoverreload - reloads config (permission: velocityfailover.reload) 
 
 ## Configuration
 
