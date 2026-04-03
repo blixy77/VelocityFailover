@@ -1,6 +1,7 @@
 package pl.blixy.velocityFailover;
 
 import com.google.inject.Inject;
+import com.velocitypowered.api.command.CommandManager;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
@@ -9,6 +10,7 @@ import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.scheduler.ScheduledTask;
 import org.slf4j.Logger;
+import pl.blixy.velocityFailover.command.ReloadCommand;
 import pl.blixy.velocityFailover.config.ConfigLoader;
 import pl.blixy.velocityFailover.config.FailoverConfig;
 import pl.blixy.velocityFailover.handler.ServerDownHandler;
@@ -42,6 +44,26 @@ public class VelocityFailover {
 
     @Subscribe
     public void onProxyInitialization(ProxyInitializeEvent event) {
+        setupFailover();
+
+        CommandManager commandManager = proxy.getCommandManager();
+        commandManager.register(commandManager.metaBuilder("failoverreload").plugin(this).build(), new ReloadCommand(this));
+    }
+
+    public void reload() {
+        if (recoveryTask != null) {
+            recoveryTask.cancel();
+            recoveryTask = null;
+        }
+
+        proxy.getEventManager().unregisterListeners(this);
+
+        setupFailover();
+
+        logger.info("[Failover] Configuration reloaded.");
+    }
+
+    private void setupFailover() {
         FailoverConfig config;
         try {
             config = ConfigLoader.load(dataDirectory);
@@ -74,8 +96,6 @@ public class VelocityFailover {
         recoveryTask = proxy.getScheduler().buildTask(this, monitor)
                 .repeat(config.getPingIntervalMs(), TimeUnit.MILLISECONDS)
                 .schedule();
-
-        logger.info("[Failover] Plugin enabled successfully.");
     }
 
     @Subscribe
