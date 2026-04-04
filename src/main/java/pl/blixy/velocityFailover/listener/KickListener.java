@@ -11,17 +11,10 @@ import pl.blixy.velocityFailover.config.FailoverConfig;
 import pl.blixy.velocityFailover.reconnect.PendingReconnectRegistry;
 import pl.blixy.velocityFailover.server.ServerStateRegistry;
 
+import java.util.List;
 import java.util.Optional;
 
 public class KickListener {
-
-    private static final String[] SHUTDOWN_KEYWORDS = {
-            "Server closed",
-            "Server shutting down",
-            "Internal Exception",
-            "Connection reset",
-            "Read timed out"
-    };
 
     private final ProxyServer proxy;
     private final FailoverConfig config;
@@ -70,7 +63,7 @@ public class KickListener {
         }
 
         String plainReason = PlainTextComponentSerializer.plainText().serialize(reasonOpt.get());
-        for (String keyword : SHUTDOWN_KEYWORDS) {
+        for (String keyword : config.getShutdownKeywords()) {
             if (plainReason.contains(keyword)) {
                 return true;
             }

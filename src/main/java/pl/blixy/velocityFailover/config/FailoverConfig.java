@@ -14,6 +14,7 @@ public class FailoverConfig {
     private final long gracePeriodMs;
     private final long transferIntervalMs;
     private final long pingTimeoutMs;
+    private final List<String> shutdownKeywords;
     private final String sentToLimboMessage;
     private final String reconnectingMessage;
     private final String connectionBlockedMessage;
@@ -36,6 +37,8 @@ public class FailoverConfig {
         this.gracePeriodMs = toLong(recovery.getOrDefault("grace-period-ms", 5000));
         this.transferIntervalMs = toLong(recovery.getOrDefault("transfer-interval-ms", 50));
         this.pingTimeoutMs = toLong(recovery.getOrDefault("ping-timeout-ms", 2000));
+
+        this.shutdownKeywords = (List<String>) yaml.getOrDefault("shutdown-keywords", List.of("Server closed", "Server shutting down"));
 
         Map<String, Object> messages = (Map<String, Object>) yaml.getOrDefault("messages", Map.of());
         this.sentToLimboMessage = (String) messages.getOrDefault("sent-to-limbo", "<red>The server is temporarily unavailable. You will be moved back automatically when it returns.");
@@ -89,5 +92,9 @@ public class FailoverConfig {
 
     public String getConnectionBlockedMessage() {
         return connectionBlockedMessage;
+    }
+
+    public List<String> getShutdownKeywords() {
+        return shutdownKeywords;
     }
 }
