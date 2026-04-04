@@ -67,6 +67,12 @@ recovery:
   transfer-interval-ms: 50     # Delay between each player transfer
   ping-timeout-ms: 2000        # Timeout for a single ping
 
+# Kick reasons that indicate a server shutdown (checked via String.contains)
+# If a player is kicked with one of these reasons, the server will be marked as offline
+shutdown-keywords:
+  - "Server closed"
+  - "Server shutting down"
+
 # Messages sent to players (MiniMessage format)
 messages:
   sent-to-limbo: "<red>The server is temporarily unavailable. You will be moved back automatically when it returns."
