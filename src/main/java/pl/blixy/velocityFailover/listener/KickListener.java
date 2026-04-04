@@ -59,7 +59,7 @@ public class KickListener {
     private boolean isShutdownKick(KickedFromServerEvent event) {
         Optional<Component> reasonOpt = event.getServerKickReason();
         if (reasonOpt.isEmpty()) {
-            return true;
+            return false;
         }
 
         String plainReason = PlainTextComponentSerializer.plainText().serialize(reasonOpt.get());
