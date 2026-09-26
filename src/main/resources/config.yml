@@ -40,7 +40,54 @@ messages:
   reconnecting: "<green>The server is back online! Reconnecting..."
   connection-blocked: "<red>This server is currently unavailable. Please try again in a moment."
   # Action bar shown to players waiting on the limbo server. {spinner} is replaced with the current frame.
+  # Set this to "" if the limbo server already sends its own action bar.
   waiting-action-bar: "<yellow>Connecting to the server <gray>{spinner}"
+
+# Persistent animated titles shown while players wait on limbo.
+# These defaults also apply to existing configs without this section. Use [] to disable an animation.
+titles:
+  # Delay between animation frames (ms). 1000 ms matches LimboReconnect's default 20 ticks.
+  interval-ms: 1000
+  # Minimum time to show connecting frames before moving the first player (ms).
+  connecting-delay-ms: 2000
+  # Each frame deliberately stays longer than the interval so the title never disappears between updates.
+  animation-stay-ms: 30000
+  waiting:
+    - title: "<red><bold>Server unavailable.</bold>"
+      subtitle: "<gray>Please wait..."
+    - title: "<red><bold>Server unavailable..</bold>"
+      subtitle: "<gray>Please wait..."
+    - title: "<red><bold>Server unavailable...</bold>"
+      subtitle: "<gray>Please wait..."
+  connecting:
+    - title: "<green><bold>Reconnecting.</bold>"
+      subtitle: "<gray>Please wait..."
+    - title: "<green><bold>Reconnecting..</bold>"
+      subtitle: "<gray>Please wait..."
+    - title: "<green><bold>Reconnecting...</bold>"
+      subtitle: "<gray>Please wait..."
+  # Timing and content for the one-off title shown when a connection attempt is blocked.
+  fade-in-ms: 300
+  stay-ms: 2500
+  fade-out-ms: 500
+  connection-blocked:
+    title: "<red><bold>Server unavailable</bold>"
+    subtitle: "<gray>Please try again in a moment"
+
+# Client-side vanilla sounds. Set name to "" to disable either sound.
+sounds:
+  # Played with every waiting title frame.
+  waiting:
+    name: "minecraft:entity.experience_orb.pickup"
+    source: "master"
+    volume: 0.5
+    pitch: 1.0
+  # Played once when the target server enters recovery.
+  connecting:
+    name: "minecraft:entity.player.levelup"
+    source: "master"
+    volume: 1.0
+    pitch: 1.0
 
 # Action bar animation for players waiting on limbo
 action-bar:

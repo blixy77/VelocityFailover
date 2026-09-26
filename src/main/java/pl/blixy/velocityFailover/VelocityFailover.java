@@ -17,6 +17,7 @@ import pl.blixy.velocityFailover.listener.FailoverListener;
 import pl.blixy.velocityFailover.reconnect.Failover;
 import pl.blixy.velocityFailover.reconnect.WaitingActionBar;
 import pl.blixy.velocityFailover.reconnect.WaitingPlayers;
+import pl.blixy.velocityFailover.reconnect.WaitingTitles;
 import pl.blixy.velocityFailover.server.RecoveryMonitor;
 import pl.blixy.velocityFailover.server.ServerStates;
 
@@ -90,6 +91,9 @@ public final class VelocityFailover {
                 .schedule());
         tasks.add(proxy.getScheduler().buildTask(this, new WaitingActionBar(proxy, config, waiting))
                 .repeat(config.actionBar().interval())
+                .schedule());
+        tasks.add(proxy.getScheduler().buildTask(this, new WaitingTitles(proxy, config, waiting, states))
+                .repeat(config.titleAnimation().interval())
                 .schedule());
     }
 

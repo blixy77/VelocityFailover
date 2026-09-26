@@ -3,6 +3,7 @@ package pl.blixy.velocityFailover.reconnect;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
+import net.kyori.adventure.sound.Sound;
 import org.slf4j.Logger;
 import pl.blixy.velocityFailover.VelocityFailover;
 import pl.blixy.velocityFailover.config.FailoverConfig;
@@ -44,7 +45,13 @@ public final class Failover {
 
     /** The grace period lets the server load its plugins before the first player arrives. */
     public void serverRecovering(String server) {
-        proxy.getScheduler().buildTask(plugin, () -> startTransfer(server)).delay(config.recovery().gracePeriod()).schedule();
+        Duration gracePeriod = config.recovery().gracePeriod();
+        Duration connectingDelay = config.titleAnimation().connectingDelay();
+        Duration delay = gracePeriod.compareTo(connectingDelay) >= 0 ? gracePeriod : connectingDelay;
+        config.sounds().connecting().ifPresent(sound -> waiting.waitingFor(server).forEach(uuid ->
+                proxy.getPlayer(uuid).filter(config::isLimbo)
+                        .ifPresent(player -> player.playSound(sound, Sound.Emitter.self()))));
+        proxy.getScheduler().buildTask(plugin, () -> startTransfer(server)).delay(delay).schedule();
     }
 
     private void sweep(String name) {

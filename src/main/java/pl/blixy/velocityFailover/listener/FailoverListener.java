@@ -71,7 +71,7 @@ public final class FailoverListener {
         }
 
         event.setResult(ServerPreConnectEvent.ServerResult.denied());
-        event.getPlayer().sendMessage(config.messages().connectionBlocked());
+        config.messages().connectionBlocked().send(event.getPlayer());
     }
 
     @Subscribe

@@ -14,6 +14,10 @@ repositories {
 dependencies {
     compileOnly("com.velocitypowered:velocity-api:4.1.1")
     annotationProcessor("com.velocitypowered:velocity-api:4.1.1")
+
+    testImplementation("com.velocitypowered:velocity-api:4.1.1")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.13.4")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 java {
@@ -22,6 +26,11 @@ java {
 
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
+}
+
+tasks.test {
+    useJUnitPlatform()
+    systemProperty("java.io.tmpdir", temporaryDir.absolutePath)
 }
 
 // @Plugin only accepts constants, so the version is stamped into a generated BuildConstants class.

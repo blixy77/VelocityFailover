@@ -6,7 +6,7 @@ When one of your backend servers crashes or restarts, players on it are moved to
 
 1. A server goes down. Velocity kicks its players with a reason like "Server closed".
 2. The plugin sees that kick, marks the server as down and sends the player to limbo instead.
-3. While they wait, a small spinner shows in their action bar.
+3. While they wait, animated title messages and a small action-bar spinner stay visible.
 4. The plugin pings the downed server until it answers a few times in a row, then waits a moment so its plugins can load.
 5. Players are moved back one at a time, so a freshly started server is not hit all at once.
 6. Anyone trying to join the server while it is down gets a message instead.
@@ -56,7 +56,40 @@ messages:
   sent-to-limbo: "<red>The server is temporarily unavailable. You will be moved back automatically when it returns."
   reconnecting: "<green>The server is back online! Reconnecting..."
   connection-blocked: "<red>This server is currently unavailable. Please try again in a moment."
+  # Set to "" if the limbo server already provides an action bar.
   waiting-action-bar: "<yellow>Connecting to the server <gray>{spinner}"
+
+# Persistent title animations. Each list entry is one animation frame.
+titles:
+  interval-ms: 1000
+  connecting-delay-ms: 2000
+  animation-stay-ms: 30000
+  waiting:
+    - { title: "<red><bold>Server unavailable.</bold>", subtitle: "<gray>Please wait..." }
+    - { title: "<red><bold>Server unavailable..</bold>", subtitle: "<gray>Please wait..." }
+    - { title: "<red><bold>Server unavailable...</bold>", subtitle: "<gray>Please wait..." }
+  connecting:
+    - { title: "<green><bold>Reconnecting.</bold>", subtitle: "<gray>Please wait..." }
+    - { title: "<green><bold>Reconnecting..</bold>", subtitle: "<gray>Please wait..." }
+    - { title: "<green><bold>Reconnecting...</bold>", subtitle: "<gray>Please wait..." }
+  fade-in-ms: 300
+  stay-ms: 2500
+  fade-out-ms: 500
+  connection-blocked:
+    title: "<red><bold>Server unavailable</bold>"
+    subtitle: "<gray>Please try again in a moment"
+
+sounds:
+  waiting:
+    name: "minecraft:entity.experience_orb.pickup"
+    source: "master"
+    volume: 0.5
+    pitch: 1.0
+  connecting:
+    name: "minecraft:entity.player.levelup"
+    source: "master"
+    volume: 1.0
+    pitch: 1.0
 
 action-bar:
   interval-ms: 400
@@ -64,6 +97,12 @@ action-bar:
 ```
 
 Server names must match `velocity.toml` exactly. Do not list the limbo server itself.
+
+Titles use MiniMessage too. Existing configs without a `titles` section automatically use the defaults above. `connecting-delay-ms` guarantees time for the connecting animation even if `grace-period-ms` is shorter. Set `waiting: []` or `connecting: []` to disable either animation. The earlier single `sent-to-limbo` and `reconnecting` title format remains accepted as a one-frame animation.
+
+Only one plugin should own the action bar. If PicoLimbo or another limbo plugin already displays one, set `messages.waiting-action-bar: ""`; VelocityFailover will then stop sending action-bar packets entirely.
+
+The waiting sound plays with every title frame; the connecting sound plays once when recovery starts. Both use vanilla client sounds and need no resource pack. Set a sound's `name` to `""` to disable it.
 
 ## Good to know
 
